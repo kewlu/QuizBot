@@ -15,8 +15,4 @@
       <ProjectReference Include="..\QuizBot.DAL.EF\QuizBot.DAL.EF.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="Controllers" />
-    </ItemGroup>
-
 </Project>

@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Linq;
+using System.Threading.Tasks;
 using QuizBot.BLL.Contracts;
 using QuizBot.DAL.Contracts;
 using QuizBot.Entities;
@@ -17,6 +18,11 @@ namespace QuizBot.BLL.Core.Services
         public async Task<Query> GetById(int id)
         {
             return await _queryRepository.Get(id);
+        }
+
+        public async Task<int> GetMaxId()
+        {
+            return (await _queryRepository.GetAll()).Max(q => q.Id);
         }
     }
 }

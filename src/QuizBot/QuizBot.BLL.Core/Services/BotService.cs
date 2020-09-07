@@ -6,6 +6,8 @@ using QuizBot.BLL.Contracts;
 using QuizBot.BLL.Core.Models;
 using QuizBot.BLL.Core.Models.Commands;
 using Telegram.Bot;
+using Telegram.Bot.Requests;
+using Telegram.Bot.Types;
 
 namespace QuizBot.BLL.Core.Services
 {
@@ -38,8 +40,13 @@ namespace QuizBot.BLL.Core.Services
 
         public static IEnumerable<Command> Commands => _commandsList.AsReadOnly();
         
+        public Task SendMessage(long chatId, string text, int? reply = null)
+        {
+            throw new System.NotImplementedException();
+        }
         public TelegramBotClient Client { get; }
         
         public Task InitAsync { get; }
+
     }
 }

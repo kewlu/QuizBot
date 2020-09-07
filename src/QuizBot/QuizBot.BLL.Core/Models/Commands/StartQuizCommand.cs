@@ -5,9 +5,10 @@ using Telegram.Bot.Types;
 
 namespace QuizBot.BLL.Core.Models.Commands
 {
-    public class StartCommand : Command
+    public class StartQuizCommand : Command
     {
-        public override string Name { get => "/start"; set => throw new NotImplementedException(); }
+        public override string Name { get => "/startquiz"; set => throw new NotImplementedException(); }
+
         public override async Task<bool> ExecuteAsync(
             Message message,
             IBotService bot,

@@ -8,7 +8,7 @@ namespace QuizBot.BLL.Core.Models.Commands
     {
         public abstract string Name { get; set; }
 
-        public abstract Task<bool> ExecuteAsync(Message message, IBotService bot);
+        public abstract Task<bool> ExecuteAsync(Message message, IBotService bot, IQuizService quizService);
 
         public virtual bool Contains(string command)
         {

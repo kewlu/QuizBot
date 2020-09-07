@@ -6,8 +6,10 @@ namespace QuizBot.BLL.Contracts
 {
     public interface IBotService
     {
-        TelegramBotClient Client { get; }
+        //TelegramBotClient Client { get; }
 
         Task InitAsync { get; }
+
+        Task SendMessage(long chatId, string text, int? reply = null);
     }
 }

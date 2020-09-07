@@ -14,9 +14,10 @@ namespace QuizBot.BLL.Core.Services
 
         private readonly ILogger<MessageService> _logger;
 
-        public MessageService(IBotService bot, ILogger<MessageService> logger)
+        public MessageService(IBotService bot, IQuizService quizService, ILogger<MessageService> logger)
         {
             _bot = bot;
+            _quizService = quizService;
             _logger = logger;
         }
         
@@ -34,14 +35,14 @@ namespace QuizBot.BLL.Core.Services
             {
                 if (!command.Contains(message.Text)) continue;
                 _logger.LogInformation(command + "==" + message.Text + "Execute Command");
-                if (await command.ExecuteAsync(message, _bot))
+                if (await command.ExecuteAsync(message, _bot, _quizService))
                     return;
                 
-                await _bot.Client.SendTextMessageAsync(message.Chat.Id, "execution error");
+                await _bot.SendMessage(message.Chat.Id, "execution error");
                 _logger.LogInformation("m");
             }
 
-            _quizService.ProcessMessage(message);
+            await _quizService.ProcessMessage(message);
         }
     }
 }

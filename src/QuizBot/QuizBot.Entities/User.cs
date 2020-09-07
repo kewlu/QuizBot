@@ -9,12 +9,12 @@ namespace QuizBot.Entities
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
         
-        public int TelegramId { get; set; }
+        public long UserId { get; set; }
         
-        public int ChatId { get; set; }
+        public long ChatId { get; set; }
         
         public string Name { get; set; }
-        
-        public int Score { get; set; }
+
+        public long Score { get; set; }
     }
 }
