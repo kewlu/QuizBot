@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -30,6 +26,7 @@ namespace QuizBot.App
             services.AddControllers();
             services.AddScoped<IMessageService, MessageService>();
             services.AddSingleton<IBotService, BotService>();
+            services.AddSingleton<IQuizService, QuizService>();
 
             services.AddTransient<IMainContext, MainContext>(contextProvider =>
                 new MainContext(Configuration["BotConfiguration:DbConnectionString"]));

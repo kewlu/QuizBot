@@ -1,9 +1,10 @@
-﻿using System.Collections.Concurrent;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using QuizBot.BLL.Contracts;
 using QuizBot.BLL.Core.Models;
 using Telegram.Bot.Types;
+using User = QuizBot.Entities.User;
 
 namespace QuizBot.BLL.Core.Services
 {
@@ -32,28 +33,35 @@ namespace QuizBot.BLL.Core.Services
             return Task.CompletedTask;
         }
 
-        public async Task NextQuery(long chatId)
+        public async Task<bool> NextQuery(long chatId)
         {
-            if(!_activeQuizzes.ContainsKey(chatId)) return;
+            if(!_activeQuizzes.ContainsKey(chatId)) return false;
             await _activeQuizzes[chatId].NextQuery();
+            return true;
         }
 
-        public Task StartQuiz(long chatId)
+        public async Task<IEnumerable<User>> GetScoreByChatId(long chatId)
         {
-            if (_activeQuizzes.ContainsKey(chatId)) return Task.CompletedTask;
+            return (await _userService.GetByChatId(chatId)).
+                OrderByDescending(u => u.Score);
+        }
+
+        public Task<bool> StartQuiz(long chatId)
+        {
+            if (_activeQuizzes.ContainsKey(chatId)) return Task.FromResult(false);
             
             var quiz = new Quiz(_botService, _userService, _queryService, chatId);
             _activeQuizzes.Add(chatId, quiz);
-            return Task.CompletedTask;
+            return Task.FromResult(true);
         }
 
-        public Task StopQuiz(long chatId)
+        public async Task<bool> StopQuiz(long chatId)
         {
-            if (!_activeQuizzes.ContainsKey(chatId)) return Task.CompletedTask;
+            if (!_activeQuizzes.ContainsKey(chatId)) return false;
                 
-            _activeQuizzes[chatId].StopQuiz().Start();
+            await _activeQuizzes[chatId].StopQuiz();
             _activeQuizzes.Remove(chatId);
-            return Task.CompletedTask;
+            return true;
         }
     }
 }

@@ -1,13 +1,16 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Telegram.Bot.Types;
+using User = QuizBot.Entities.User;
 
 namespace QuizBot.BLL.Contracts
 {
     public interface IQuizService
     {
         Task ProcessMessage(Message message);
-        Task NextQuery(long chatId);
-        Task StartQuiz(long chatId);
-        Task StopQuiz(long chatId);
+        Task<bool> NextQuery(long chatId);
+        Task<bool> StartQuiz(long chatId);
+        Task<bool> StopQuiz(long chatId);
+        Task<IEnumerable<User>> GetScoreByChatId(long chatId);
     }
 }

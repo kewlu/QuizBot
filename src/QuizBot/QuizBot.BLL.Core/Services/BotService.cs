@@ -1,13 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using QuizBot.BLL.Contracts;
 using QuizBot.BLL.Core.Models;
 using QuizBot.BLL.Core.Models.Commands;
 using Telegram.Bot;
-using Telegram.Bot.Requests;
-using Telegram.Bot.Types;
 
 namespace QuizBot.BLL.Core.Services
 {
@@ -17,9 +15,7 @@ namespace QuizBot.BLL.Core.Services
         private readonly IUserService _userService;
 
         private readonly BotConfig _config;
-
-        private readonly ILogger<BotService> _logger;
-
+        
         private static List<Command> _commandsList;
 
         public BotService(IOptions<BotConfig> config, IQueryService queryService, IUserService userService)
@@ -29,8 +25,6 @@ namespace QuizBot.BLL.Core.Services
             _config = config.Value;
             Client = new TelegramBotClient(_config.BotToken);
             
-            _logger.LogInformation("Client created: {0}", _config.BotToken);
-
             _commandsList = new List<Command> 
             {
                 new StartCommand(),
@@ -42,9 +36,10 @@ namespace QuizBot.BLL.Core.Services
         
         public Task SendMessage(long chatId, string text, int? reply = null)
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
-        public TelegramBotClient Client { get; }
+
+        private TelegramBotClient Client { get; }
         
         public Task InitAsync { get; }
 

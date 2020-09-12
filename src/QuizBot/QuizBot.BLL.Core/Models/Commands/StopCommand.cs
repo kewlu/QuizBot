@@ -7,13 +7,15 @@ namespace QuizBot.BLL.Core.Models.Commands
 {
     public class StopCommand : Command
     {
-        public override string Name { get => "/stop"; set => throw new NotImplementedException(); }
+        protected override string Name { get => "/stop"; set => throw new NotImplementedException(); }
         public override async Task<bool> ExecuteAsync(
             Message message,
             IBotService bot,
             IQuizService quizService)
         {
-            await bot.SendMessage(message.Chat.Id, "Это викторина-бот");
+            var chatId = message.Chat.Id;
+            if(await quizService.StopQuiz(chatId))
+                await bot.SendMessage(chatId, "Викторина окончена!");
             return true;
         }
     }

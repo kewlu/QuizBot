@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using QuizBot.BLL.Contracts;
 using Telegram.Bot.Types;
@@ -7,13 +8,19 @@ namespace QuizBot.BLL.Core.Models.Commands
 {
     public class ScoreCommand : Command
     {
-        public override string Name { get => "/score"; set => throw new NotImplementedException(); }
+        protected override string Name { get => "/score"; set => throw new NotImplementedException(); }
         public override async Task<bool> ExecuteAsync(
             Message message,
             IBotService bot,
             IQuizService quizService)
         {
-            await bot.SendMessage(message.Chat.Id, "Это викторина-бот");
+            var chatId = message.Chat.Id;
+            var userList = await quizService.GetScoreByChatId(chatId);
+            
+            var scoreTable = userList.Aggregate("Таблица участников:", (current, user) => 
+                current + $"{user.Name} : {user.Score}\n");
+
+            await bot.SendMessage(chatId, scoreTable);
             return true;
         }
     }

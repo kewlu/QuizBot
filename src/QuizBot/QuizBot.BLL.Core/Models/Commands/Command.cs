@@ -6,7 +6,7 @@ namespace QuizBot.BLL.Core.Models.Commands
 {
     public abstract class Command
     {
-        public abstract string Name { get; set; }
+        protected abstract string Name { get; set; }
 
         public abstract Task<bool> ExecuteAsync(Message message, IBotService bot, IQuizService quizService);
 

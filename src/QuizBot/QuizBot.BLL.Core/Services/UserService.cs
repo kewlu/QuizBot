@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using QuizBot.BLL.Contracts;
@@ -36,7 +35,6 @@ namespace QuizBot.BLL.Core.Services
         {
             return await _userRepository.FindAsync(x => x.ChatId == chatId);
         }
-
         public async Task UpdateUser(User user)
         {
             await _userRepository.Update(user);

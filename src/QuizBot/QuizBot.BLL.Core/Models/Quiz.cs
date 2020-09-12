@@ -4,17 +4,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Timers;
 using QuizBot.BLL.Contracts;
 using QuizBot.Entities;
-using System.Timers;
-using QuizBot.BLL.Core.Services;
 using Telegram.Bot.Types;
 
 namespace QuizBot.BLL.Core.Models
 {
     public class Quiz
     {
-        private readonly int _chatId;
+        private readonly long _chatId;
 
         private readonly IBotService _bot;
         private readonly IUserService _userService;
@@ -29,11 +28,12 @@ namespace QuizBot.BLL.Core.Models
 
         private ConcurrentQueue<Message> _messages = new ConcurrentQueue<Message>();
 
-        public Quiz(IBotService bot, IUserService userService, IQueryService queryService, long _chatId)
+        public Quiz(IBotService bot, IUserService userService, IQueryService queryService, long chatId)
         {
             _bot = bot;
             _userService = userService;
             _queryService = queryService;
+            _chatId = chatId;
 
             _updateTimer = new Timer(1000);
             _updateTimer.Elapsed += async (sender, e) => await ProcessMessages();
