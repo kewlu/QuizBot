@@ -11,6 +11,7 @@
     <ItemGroup>
       <ProjectReference Include="..\QuizBot.BLL.Contracts\QuizBot.BLL.Contracts.csproj" />
       <ProjectReference Include="..\QuizBot.DAL.Contracts\QuizBot.DAL.Contracts.csproj" />
+      <ProjectReference Include="..\QuizBot.DAL.EF\QuizBot.DAL.EF.csproj" />
       <ProjectReference Include="..\QuizBot.Entities\QuizBot.Entities.csproj" />
     </ItemGroup>
 

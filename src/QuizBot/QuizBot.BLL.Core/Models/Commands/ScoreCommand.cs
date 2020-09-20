@@ -17,8 +17,8 @@ namespace QuizBot.BLL.Core.Models.Commands
             var chatId = message.Chat.Id;
             var userList = await quizService.GetScoreByChatId(chatId);
             
-            var scoreTable = userList.Aggregate("Таблица участников:", (current, user) => 
-                current + $"{user.Name} : {user.Score}\n");
+            var scoreTable = userList.Aggregate("", (current, user) => 
+                current + $"{user.Username} : {user.Score}\n");
 
             await bot.SendMessage(chatId, scoreTable);
             return true;

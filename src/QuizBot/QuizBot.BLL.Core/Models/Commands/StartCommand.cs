@@ -14,9 +14,7 @@ namespace QuizBot.BLL.Core.Models.Commands
             IQuizService quizService)
         {
             var chatId = message.Chat.Id;
-            if(await quizService.StartQuiz(chatId))
-                await bot.SendMessage(chatId, "Викторина начинается!");
-            return true;
+            return await quizService.StartQuiz(chatId);
         }
     }
 }

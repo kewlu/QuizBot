@@ -1,48 +1,54 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using QuizBot.BLL.Contracts;
 using QuizBot.DAL.Contracts;
+using QuizBot.DAL.EF;
 using QuizBot.Entities;
 
 namespace QuizBot.BLL.Core.Services
 {
     public class UserService : IUserService
     {
-        private readonly IRepository<User> _userRepository;
+        //private readonly IRepository<User> _userRepository;
 
-        public UserService(IRepository<User> userRepository)
+        private readonly MainContext _db;
+
+        public UserService(MainContext db)
         {
-            _userRepository = userRepository;
+            _db = db;
         }
         
         public async Task AddUser(User user)
         {
-            await _userRepository.Create(user);
+            await _db.Users.AddAsync(user);
+            await _db.SaveChangesAsync();
         }
 
         public async Task<User> GetById(int id)
         {
-            return await _userRepository.Get(id);
+            return await _db.Users.FirstOrDefaultAsync(o => o.Id == id);
         }
 
-        public async Task<IEnumerable<User>> GetByUserId(long userId)
+        public async Task<User> GetByUserId(long userId)
         {
-            return await _userRepository.FindAsync(x => x.UserId == userId);
+            return await _db.Users.FirstOrDefaultAsync(x => x.UserId == userId);
         }
 
         public async Task<IEnumerable<User>> GetByChatId(long chatId)
         {
-            return await _userRepository.FindAsync(x => x.ChatId == chatId);
+            return await _db.Users.Where(x => x.ChatId == chatId).ToListAsync();
         }
-        public async Task UpdateUser(User user)
+        private async Task UpdateUser(User user)
         {
-            await _userRepository.Update(user);
+            _db.Users.Update(user);
+            await _db.SaveChangesAsync();
         }
 
         public async Task<IEnumerable<User>> GetAll()
         {
-            return await _userRepository.GetAll();
+            return await _db.Users.AsNoTracking().ToListAsync();
         }
 
         public async Task UpdateUserScore(long userId, long chatId, int updScore, string name = null)
@@ -61,10 +67,9 @@ namespace QuizBot.BLL.Core.Services
             {
                 UserId = userId,
                 ChatId = chatId,
-                Name = name,
+                Username = name,
                 Score = updScore
             };
-
             await AddUser(user);
         }
     }

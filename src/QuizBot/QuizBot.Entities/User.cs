@@ -13,7 +13,7 @@ namespace QuizBot.Entities
         
         public long ChatId { get; set; }
         
-        public string Name { get; set; }
+        public string Username { get; set; }
 
         public long Score { get; set; }
     }

@@ -1,28 +1,30 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using QuizBot.BLL.Contracts;
 using QuizBot.DAL.Contracts;
+using QuizBot.DAL.EF;
 using QuizBot.Entities;
 
 namespace QuizBot.BLL.Core.Services
 {
     public class QueryService : IQueryService
     {
-        private readonly IRepository<Query> _queryRepository;
+        private readonly MainContext _db;
 
-        public QueryService(IRepository<Query> queryRepository)
+        public QueryService(MainContext db)
         {
-            _queryRepository = queryRepository;
+            _db = db;
         }
         
         public async Task<Query> GetById(int id)
         {
-            return await _queryRepository.Get(id);
+            return await _db.Queries.FirstOrDefaultAsync(x => x.Id == id);
         }
 
         public async Task<int> GetMaxId()
         {
-            return (await _queryRepository.GetAll()).Max(q => q.Id);
+            return await _db.Queries.MaxAsync(q => q.Id);
         }
     }
 }

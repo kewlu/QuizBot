@@ -16,8 +16,8 @@ namespace QuizBot.BLL.Core.Models
         private readonly long _chatId;
 
         private readonly IBotService _bot;
-        private readonly IUserService _userService;
-        private readonly IQueryService _queryService;
+
+        private readonly IQuizService _quizService;
 
         private Timer _hintTimer;
         private Timer _updateTimer;
@@ -28,12 +28,11 @@ namespace QuizBot.BLL.Core.Models
 
         private ConcurrentQueue<Message> _messages = new ConcurrentQueue<Message>();
 
-        public Quiz(IBotService bot, IUserService userService, IQueryService queryService, long chatId)
+        public Quiz(IBotService bot, IQuizService quizService, long chatId)
         {
             _bot = bot;
-            _userService = userService;
-            _queryService = queryService;
             _chatId = chatId;
+            _quizService = quizService;
 
             _updateTimer = new Timer(1000);
             _updateTimer.Elapsed += async (sender, e) => await ProcessMessages();
@@ -48,9 +47,7 @@ namespace QuizBot.BLL.Core.Models
 
         public async Task NextQuery()
         {
-            var maxId = await _queryService.GetMaxId();
-            var randomId = new Random().Next(1, maxId);
-            var query = await _queryService.GetById(randomId);
+            var query = await _quizService.GetRandomQuery();
 
             _hint = new StringBuilder(new string('*', query.Answer.Length));
             _closedLetters = Enumerable.Range(0, _hint.Length - 1).ToList();
@@ -96,12 +93,13 @@ namespace QuizBot.BLL.Core.Models
             
             await _bot.SendMessage(_chatId,
                 "Верно ответил " + message.From.Username +
-                "и получает " + _closedLetters.Count + " баллов!\n",  message.MessageId);
+                " и получает " + _closedLetters.Count + "\n",  message.MessageId);
 
             _hintTimer.Stop();
             _updateTimer.Stop();
             
-            await _userService.UpdateUserScore(
+            
+           await _quizService.UpdateUserScore(
                 message.From.Id,
                 message.Chat.Id,
                 _closedLetters.Count,

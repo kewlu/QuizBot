@@ -11,34 +11,35 @@ namespace QuizBot.BLL.Core.Services
 {
     public class BotService : IBotService
     {
-        private readonly IQueryService _queryService;
-        private readonly IUserService _userService;
-
         private readonly BotConfig _config;
         
         private static List<Command> _commandsList;
 
-        public BotService(IOptions<BotConfig> config, IQueryService queryService, IUserService userService)
+        private Dictionary<long, Quiz> _quizzes = new Dictionary<long, Quiz>();
+        
+        public BotService(IOptions<BotConfig> config)
         {
-            _queryService = queryService;
-            _userService = userService;
             _config = config.Value;
             Client = new TelegramBotClient(_config.BotToken);
             
             _commandsList = new List<Command> 
             {
                 new StartCommand(),
-                new ScoreCommand()
+                new NextCommand(),
+                new ScoreCommand(),
+                new StopCommand()
             };
         }
 
         public static IEnumerable<Command> Commands => _commandsList.AsReadOnly();
-        
-        public Task SendMessage(long chatId, string text, int? reply = null)
-        {
-            throw new NotImplementedException();
-        }
 
+        public async Task SendMessage(long chatId, string text, int? reply = null)
+        {
+            if (reply == null)
+                await Client.SendTextMessageAsync(chatId, text);
+            else
+                await Client.SendTextMessageAsync(chatId, text, replyToMessageId: reply.Value);
+        }
         private TelegramBotClient Client { get; }
         
         public Task InitAsync { get; }

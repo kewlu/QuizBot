@@ -16,31 +16,28 @@ namespace QuizBot.App
     {
         public Startup(IConfiguration configuration)
         {
-            Configuration = configuration;
+            _configuration = configuration;
         }
-        
-        private IConfiguration Configuration { get; }
+
+        private readonly IConfiguration _configuration;
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers();
+            services.AddControllers().AddNewtonsoftJson();
+            services.AddMainContext(_configuration);
+            //services.AddTransient<IMainContext, MainContext>(
+            //    provider => new MainContext(_configuration["ConnectionString"]));
+            services.AddTransient<IQueryService, QueryService>();
+            services.AddTransient<IUserService, UserService>();
             services.AddScoped<IMessageService, MessageService>();
             services.AddSingleton<IBotService, BotService>();
             services.AddSingleton<IQuizService, QuizService>();
 
-            services.AddTransient<IMainContext, MainContext>(contextProvider =>
-                new MainContext(Configuration["BotConfiguration:DbConnectionString"]));
-            services.AddTransient<IQueryService, QueryService>();
-            services.AddTransient<IUserService, UserService>();
-
-            services.Configure<BotConfig>(Configuration.GetSection("BotConfiguration"));
+            services.Configure<BotConfig>(_configuration.GetSection("BotConfiguration"));
         }
-
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            app.UseRouting();
-            
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -48,13 +45,12 @@ namespace QuizBot.App
             else
             {
                 app.UseHsts();
-                app.UseCors();
             }
             
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapGet("/", async context => { await context.Response.WriteAsync("Hello World!"); });
-            });
+            app.UseRouting();
+            app.UseCors();
+            
+            app.UseEndpoints(endpoints =>endpoints.MapControllers());
         }
     }
 }

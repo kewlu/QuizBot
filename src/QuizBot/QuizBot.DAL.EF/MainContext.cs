@@ -5,7 +5,7 @@ using QuizBot.Entities;
 
 namespace QuizBot.DAL.EF
 {
-    public class MainContext : DbContext, IMainContext
+    public class MainContext : DbContext
     {
         private string ConnectionString { get; set; }
         
@@ -17,8 +17,7 @@ namespace QuizBot.DAL.EF
             ConnectionString = connectionString;
         }
         
-        async Task IMainContext.SaveChangesAsync() => await base.SaveChangesAsync();
-
+        public MainContext(DbContextOptions<MainContext> options) : base(options){}
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)

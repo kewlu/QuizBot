@@ -11,13 +11,14 @@ namespace QuizBot.BLL.Core.Services
         private readonly IBotService _bot;
 
         private readonly IQuizService _quizService;
-
+        
         private readonly ILogger<MessageService> _logger;
-
-        public MessageService(IBotService bot, IQuizService quizService, ILogger<MessageService> logger)
+        public MessageService(IBotService bot, IQuizService quizService,
+            ILogger<MessageService> logger)
         {
             _bot = bot;
             _quizService = quizService;
+
             _logger = logger;
         }
         
